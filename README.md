@@ -37,7 +37,7 @@ Detail: `case-02-flight-ticket-booking/`
 
 Simulasi analisis perusahaan distribusi untuk melihat performa penjualan, produk terlaris, dan kontribusi customer.
 
-Detail: `case-01-northwind/`
+Detail: `case-01-wikiuniversity/`
 
 ---
 
