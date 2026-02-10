@@ -20,3 +20,6 @@ SELECT * FROM customers LIMIT 10;
 SELECT * FROM orders LIMIT 10;
 SELECT * FROM orderdetails LIMIT 10;
 SELECT * FROM products LIMIT 10;
+
+--kategori apa aja yang terdapat pada dataset
+SELECT DISTINCT c.categoryname FROM categories c;
