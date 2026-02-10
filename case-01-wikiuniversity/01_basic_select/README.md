@@ -1,4 +1,4 @@
-# Basic SELECT & Filtering
+# Basic Select & Filtering
 
 Folder ini berisi query SQL dasar untuk menampilkan dan memfilter data.
 
