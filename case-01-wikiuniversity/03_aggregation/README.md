@@ -13,3 +13,4 @@ Agregasi membantu mengidentifikasi:
 - Customer paling bernilai
 - Produk paling diminati
 - Supplier dengan kontribusi terbesar terhadap revenue
+
