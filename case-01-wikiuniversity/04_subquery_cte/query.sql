@@ -1,5 +1,4 @@
 --Berapa kontribusi setiap produk terhadap total pendapatan suppliernya
-
 WITH supplier_revenue AS (
   SELECT s.supplier_id,
          s.supplier_name,
@@ -103,6 +102,54 @@ WHERE s.country='USA' AND tb.jumlah_product>2
 GROUP BY c.customer_name, p.product_name, tb.jumlah_product
 HAVING SUM(od.quantity)>50
 ORDER BY total_unit DESC;
+
+--Tampilkan daftar semua produk beserta jumlah unit yang terjual, dan persentase kontribusi tiap produk dari total penjualan
+SELECT 
+  p.product_id,
+  p.product_name,
+  SUM(d.quantity) AS total_sold,
+  (SELECT SUM(quantity) FROM orderdetails) AS total_all_sold,
+  ROUND(SUM(d.quantity) * 100.0 / (SELECT SUM(quantity) FROM orderdetails), 2) AS pct_of_total
+FROM products p
+LEFT JOIN orderdetails d ON p.product_id = d.product_id
+GROUP BY p.product_id, p.product_name;
+
+--Tampilkan nama customer yang membeli produk lebih dari 3 kategori
+SELECT customer_name
+FROM customers c
+WHERE (
+  SELECT COUNT(DISTINCT p.category_id)
+  FROM orders o
+  JOIN orderdetails od ON o.order_id = od.order_id
+  JOIN products p ON od.product_id = p.product_id
+  WHERE o.customer_id = c.customer_id
+) > 3;
+
+--Tampilkan nama pelanggan, nama negara asal supplier, dengan total harga pembelian lebuh dari 1000 untuk setiap pelanggan yang pernah membeli produk dari lebih dari 1 supplier 
+SELECT* FROM (
+    SELECT c.customer_name, 
+    s.country, 
+    SUM(p.price*od.quantity)AS total_harga_pembelian, 
+    COUNT(DISTINCT p.supplier_id) AS jumlah_supplier 
+    FROM suppliers s 
+    JOIN products p ON p.supplier_id=s.supplier_id 
+    JOIN orderdetails od ON p.product_id=od.product_id
+    JOIN orders o ON o.order_id=od.order_id
+    JOIN customers c ON c.customer_id=o.customer_id
+    GROUP BY c.customer_name, s.country
+    HAVING COUNT(DISTINCT p.supplier_id)>1
+    ORDER BY SUM(p.price*od.quantity) DESC) tb 
+WHERE total_harga_pembelian>1000;
+
+--Tampilkan nama kategori yang memiliki jumlah produk lebih dari 6
+SELECT* FROM (
+  SELECT c.category_name, COUNT(p.product_id) AS jumlah_produk 
+  FROM categories c 
+  JOIN products p ON c.category_id = p.category_id
+GROUP BY c.category_name) dt
+WHERE dt.jumlah_produk >6;
+
+
 
 
 
