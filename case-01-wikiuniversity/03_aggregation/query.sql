@@ -77,7 +77,6 @@ GROUP BY c.customer_id, c.customer_name
 ORDER BY total_amount DESC;
 
 --Berapa total pendapatan per produk, dan seberapa besar persentasenya terhadap total penjualan?
-
 SELECT
   p.product_id,
   p.product_name,
@@ -97,7 +96,6 @@ GROUP BY p.product_id, p.product_name
 ORDER BY persentase DESC;
 
 --Tampilkan Suplier terbesar pada dataset tersebut
-
 SELECT s.supplier_id, s.supplier_name, STRING_AGG(p.product_name,',') AS jenis_produk, 
 COUNT(p.product_name) AS total_product, 
   SUM(p.price*d.quantity) AS total_dana
@@ -106,5 +104,36 @@ JOIN products p ON p.supplier_id=s.supplier_id
 JOIN orderdetails d ON d.product_id=p.product_id
 GROUP by s.supplier_id, s.supplier_name
 ORDER by total_product DESC;
+
+--Tampilkan harga produk yang harus dijual pembeli untuk mendapat keuntungan 25% dari harga modal
+SELECT  p.product_name, 
+        p.unit, p.price, 
+      ((p.price/substring(p.unit FROM '^\d+')::numeric)*1.25) AS harga_per_satuan 
+FROM products p 
+GROUP BY p.product_name, p.unit, p.price 
+ORDER BY harga_per_satuan DESC;
+
+--Tmpilkan total pendapatan yang akan didapatkan jika product yang dibeli customer terjual semua dengan harga jual mengambil keuntungan 50%
+SELECT p.product_name, p.unit, p.price, 
+      ((p.price/substring(p.unit FROM '^\d+')::numeric)*1.50) AS harga_per_satuan,
+      (((p.price/substring(p.unit FROM '^\d+')::numeric)*1.50) * substring (p.unit FROM '^\d+')::numeric) AS pendapatan_kotor
+FROM products p GROUP BY p.product_name, p.unit, p.price ORDER BY pendapatan_kotor DESC;
+
+--Tampilkan customer yang membeli lebih dari 3 kategori produk berbeda
+SELECT c.customer_name FROM customers c 
+JOIN orders o ON c.customer_id=o.customer_id
+JOIN orderdetails od ON od.order_id=o.order_id
+JOIN products p ON p.product_id=od.product_id
+GROUP BY c.customer_name HAVING COUNT(DISTINCT p.category_id)>3;
+
+--Tampilkan pelanggan yang membeli produk dari lebih dari 3 kategori berbeda, beserta daftar semua produk yang mereka beli, dan jumlah kategori unik yang dibeli. Urutkan dari pelanggan dengan kategori terbanyak ke paling sedikit
+SELECT c.customer_id, c.customer_name, STRING_AGG(p.product_name,',') AS nama_produk, COUNT(DISTINCT p.category_id) AS jumlah_kategori FROM customers c 
+JOIN orders o ON c.customer_id=o.customer_id
+JOIN orderdetails od ON od.order_id=o.order_id
+JOIN products p ON p.product_id=od.product_id
+GROUP BY c.customer_id, c.customer_name HAVING COUNT(DISTINCT p.category_id)>3
+ORDER BY COUNT(DISTINCT p.category_id)DESC;
+
+
 
 
