@@ -45,3 +45,12 @@ WHERE p.product_name LIKE '%Gula%';
 SELECT p.product_name,c.category_name FROM products p 
 JOIN categories c ON p.category_id = c.category_id WHERE c.category_name ='Seafood';
 
+--Tampilkan asal kota yang Kota mana yang memberikan kontribusi pendapatan terbesar, serta berapa jumlah customer dan order di masing-masing kota?
+SELECT c.city, COUNT(DISTINCT c.customer_id) AS total_customers, COUNT(o.order_id) as total_order, SUM(od.quantity*p.price) AS total_pendapatan 
+FROM products p 
+JOIN orderdetails od ON p.product_id=od.product_id
+JOIN orders o ON o.order_id=od.order_id
+JOIN customers c ON c.customer_id=o.customer_id
+GROUP BY c.city
+ORDER BY total_pendapatan DESC;
+
