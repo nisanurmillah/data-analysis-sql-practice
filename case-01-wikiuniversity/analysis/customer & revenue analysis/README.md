@@ -52,7 +52,11 @@ Pendekatan analisis meliputi:
 ## 1. Analysis & Findings
 
 ### VIP Customer Concentration
+
 Diagram pie menunjukkan 10 pelanggan dengan nilai transaksi tertinggi.
+![VIP Customer](images/vip_customer_pie_all.png)
+
+![VIP Customer](images/10_top_customers.png)
 
 Pelanggan dengan kontribusi terbesar adalah:
 
@@ -65,7 +69,10 @@ Ini menunjukkan tingkat ketergantungan yang cukup tinggi terhadap pelanggan utam
 ---
 
 ### 2. Spending Pattern of Top Customer
+
 Dari peta hierarki pembelian Ernst Handel terlihat urutan produk dari nilai belanja terbesar hingga terkecil.
+
+![Treemap Ernst Handel](images/ernst_handel_treemap.png)
 
 Produk dengan pengeluaran terbesar adalah:
 
@@ -79,7 +86,9 @@ Produk ini dapat dijadikan:
 ---
 
 ### 3. Loyal & Multi-Category Customers
+
 Tabel menunjukkan pelanggan yang membeli dari lebih dari 3 kategori atau supplier berbeda.
+![Multi Category](images/10_top_multi_category_table.png)
 
 Karakteristik segmen ini:
 - Tidak terpaku pada satu jenis produk
@@ -94,7 +103,9 @@ Mereka adalah kandidat utama untuk:
 ---
 
 ### 4. Market Performance per City
+
 Grafik memperlihatkan hubungan antara jumlah pelanggan dan total pendapatan kota.
+![City Revenue](images/city_revenue_chart.png)
 
 Temuan penting:
 
