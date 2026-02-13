@@ -64,7 +64,7 @@ Distribusi terbesar berasal dari:
 - Bekasi (~8.6%)
 - Kota lainnya tersebar dengan proporsi lebih kecil
 
-📌 Insight:
+Insight:
 Konsentrasi pengguna berada di kota-kota besar. Strategi regional marketing bisa difokuskan di kota dengan pertumbuhan tinggi.
 
 ---
@@ -133,6 +133,7 @@ Project ini menunjukkan kemampuan:
 - Analytical Thinking
 - Dashboarding & Visualization
 - Business Insight Interpretation
+
 
 
 
