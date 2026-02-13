@@ -1,0 +1,140 @@
+from datetime import datetime
+import uuid
+import pandas as pd
+import numpy as np
+import re
+
+file_in="data_users_kemasaja_2024.csv"
+file_out="data_users_kemasaja_2024_celan.csv"
+
+def missing_report(df, judul="Ringkasan NA per kolom"):
+    print("n"+"="*30,judul,"="*30+"\n")
+    print(df.isna().sum().sort_values(ascending=False))
+    print("total_baris=", len(df))
+    print("shape_awal=", df.shape)
+    print(df.head(10))
+    print("="*30+"\n")
+
+na_like=[""," ","NA", "N/A","Null", "null", "none", "-", "--"]
+
+df=pd.read_csv(file_in, na_values=na_like)
+
+missing_report(df, "data awal")
+
+#hapus kolom kosong
+df=df.dropna(axis=1, how='all')
+
+#ubah jadi UUID
+def to_uuid_safe(x):
+    if pd.isnull(x) or str(x).strip()=="":
+        return None
+    try:
+        return uuid.UUID(str(x))  # coba ubah ke UUID
+    except (ValueError, TypeError):
+        return uuid.uuid4()  # kalau gagal, bikin UUID baru
+
+df["userId"] = df["userId"].apply(to_uuid_safe)
+df["driftUserId"] = df["driftUserId"].apply(to_uuid_safe)
+
+missing_report(df, "setelah diberi keterangan")
+
+#Ubah tanggal
+kolom_tanggal=["start_date","last_active","last_contacted"]
+
+
+def ubah_tanggal (date_str):
+    if isinstance(date_str, pd.Timestamp):
+        return date_str
+    if pd.isnull(date_str) or str(date_str).strip()=="":
+        return np.nan
+    for  format in ("%Y-%m-%d", "%d-%m-%Y", "%Y/%m/%d", "%d/%m/%Y"):
+        try:
+            return datetime.strptime(str(date_str).strip(), format)
+        except ValueError:
+            continue
+    return np.nan
+
+
+for kol in kolom_tanggal:
+    df[kol] = pd.to_datetime(df[kol].apply(ubah_tanggal), errors="coerce")
+    df[kol] = df[kol].fillna("data tidak tersedia")
+
+print("INI DATA TANGGAL")
+print(df[kol].head(10))
+
+#edit email
+if "email" in df.columns:
+    # Regex email sederhana (cukup untuk validasi dasar)
+    email_ok = df["email"].notna() & df["email"].str.contains(
+        r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$",
+        regex=True
+    )
+    invalid_email = df["email"].notna() & ~email_ok
+    print("Email invalid:", invalid_email.sum())
+    df.loc[invalid_email, "email"] = pd.NA
+
+print(df.loc[invalid_email, "email"])
+df["email"]=df["email"].str.lower()
+
+
+#hapus kolom
+kolom_text = df.select_dtypes(include=["object"]).columns
+df[kolom_text]=df[kolom_text].replace(r"^\s*$", pd.NA, regex=True)
+df[kolom_text]=df[kolom_text].fillna("data tidak tersedia")
+missing_report(df, "setelah diberi keterangan")
+#ubah nomor telepon jadi string
+
+df["phone"]= df["phone"].replace(na_like,pd.NA)
+df["phone"]= df["phone"].fillna("data tidak tersedia")
+df["phone"]= df["phone"].astype(str)
+missing_report(df, "setelh diberi keterangan")
+print(df["phone"].head(10))
+
+kolom_number=["CQL Score","githubFollowers","twitterFollowers", "latitude", "longitude"]
+df[kolom_number] = df[kolom_number].replace(na_like, pd.NA)
+df[kolom_number] = df[kolom_number].fillna("data tidak tersedia")
+missing_report(df, "setelah diberi keterangan")
+
+
+print(df["email"])
+print(df.loc[invalid_email, "email"])
+
+#Tangani Duplikat
+if "userId" in df.columns:
+    dup = df.duplicated(subset=["userId"], keep="first")
+    print("Duplikat berdasarkan userId:", dup.sum())
+    df = df[~dup].copy()
+else:
+    # Contoh fallback jika tidak ada userId
+    if set(["email", "start_date"]).issubset(df.columns):
+        dup = df.duplicated(subset=["email", "start_date"], keep="first")
+        print("Duplikat berdasarkan email+start_date:", dup.sum())
+        df = df[~dup].copy()
+
+print("Shape setelah drop duplikat:", df.shape)
+
+for c in ["type", "state", "lastName", "name"]:
+    if c in df.columns and df[c].dtype == "object":
+        df[c]=df[c].str.lower()
+
+# 1. Kolom jadi huruf kecil
+df.columns = df.columns.str.lower()
+
+# 2. Isi string jadi huruf kecil
+df = df.applymap(lambda x: x.lower() if isinstance(x, str) else x)
+
+#simpan ke CSV
+df.to_csv(file_out, index=False)
+print("selesai disimpan ke:", file_out)
+print("shape akhir:", df.shape)
+missing_report(df, "Ringkasan akhir sebelum analisis lanjut")
+print(df.head(30))
+
+if "start_date" in df.columns:
+    # Ambil baris valid: bukan NaT dan bukan "data tidak ditemukan"
+    valid_dates = df["start_date"].notna() & (df["start_date"] != "data tidak tersedia")
+
+    # Hitung jumlah baris valid
+    jumlah_valid = valid_dates.sum()
+
+    print("Jumlah start_date valid:", jumlah_valid)
