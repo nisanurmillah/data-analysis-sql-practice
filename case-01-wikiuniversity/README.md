@@ -112,7 +112,7 @@ nalisis dilakukan menggunakan pendekatan SQL dengan tahapan berikut:
 - Simulasi pricing dan estimasi revenue
 - Data cleaning dan standarisasi data
 
-📄 Detail metodologi lengkap tersedia di:  
+Detail metodologi lengkap tersedia di:  
 `analysis/methodology.md`
 
 ---
@@ -135,6 +135,12 @@ nalisis dilakukan menggunakan pendekatan SQL dengan tahapan berikut:
 - Mengoptimalkan kerja sama strategis dengan supplier utama.
 - Menerapkan strategi pricing berbasis data.
 - Menjaga konsistensi dan kualitas data untuk analisis jangka panjang.
+
+---
+## Dashboard Link
+Dashboard dapat diakses di:
+
+https://lookerstudio.google.com/reporting/28e80093-6e43-4611-b0b5-6bba6b5b301a
 
 ---
 
