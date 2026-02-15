@@ -54,6 +54,7 @@ Pendekatan analisis meliputi:
 ### VIP Customer Concentration
 
 Diagram pie menunjukkan 10 pelanggan dengan nilai transaksi tertinggi.
+
 ![VIP Customer](images/vip_customer_pie_all.png)
 
 ![VIP Customer](images/10_top_customers.png)
