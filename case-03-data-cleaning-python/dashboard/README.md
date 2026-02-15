@@ -4,6 +4,7 @@ Berdasarkan hasil visualisasi dashboard Looker Studio, diperoleh insight sebagai
 ## Dashboard Preview
 
 ![dashboard](dashboard_1.png)
+
 ![dashboard](dashboard_2.png)
 
 ---
@@ -134,6 +135,7 @@ Project ini menunjukkan kemampuan:
 - Analytical Thinking
 - Dashboarding & Visualization
 - Business Insight Interpretation
+
 
 
 
